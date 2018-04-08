@@ -33,6 +33,7 @@ sll  $8,  $8,  10
 and  $9,  $14, $8
 sll  $9,  $9,  14
 sll  $8,  $8,  14
+nor  $8,  $8,  $0
 and  $22, $22, $8
 or   $22, $22, $9
 \end{verbatim}
@@ -40,12 +41,11 @@ or   $22, $22, $9
 \section*{Problem 4}
 
 \begin{verbatim}
-slt  $20, $0, $17 # $0 < $17, so $20=1
-bne  $20, $0, 1   # $20 != $0, so increase program counter by 1
-beq  $0, $0, 1    # skipped
-addi $20, $20, 2  # $20 = $20 + 2, so $20=3
+slt  $20, $0,  $17 # $0 < $17, so $20=1
+bne  $20, $0,  1   # $20 != $0, so increase program counter by 1
+beq  $0,  $0,  1   # skipped
+addi $20, $20, 2   # $20 = $20 + 2, so $20=3
 \end{verbatim}
-
 The final value of register \texttt{\$20} is \(3\). The flow of execution is such that the first instruction stores \(1\) in register
 \texttt{\$20}, which then causes the next instruction to branch. This skips the third instruction, and finally the last instruction adds
 \(2\) to register \texttt{\$20} and stores it, resulting in the value of \(3\).
@@ -60,6 +60,7 @@ The machine code in binary is
 \section*{Problem 6}
 
 \begin{center}
+        \hspace*{-1cm}
         \begin{tabular}{|c||c|c|c|c|c|c|c|}
                 \hline
                 Address & op & rs & rt & rd & shamt & func & inst \\
@@ -89,13 +90,47 @@ The machine code in binary is
                 0000 0001 1111 0000 & 000010 & \multicolumn{5}{|c|}{00 0000 0000 0000 0000 0111 0010} & j\\
                 \hline
         \end{tabular}
+        \hspace*{-1cm}
 \end{center}
 
 \section*{Problem 7}
 
-
+\begin{verbatim}
+sltu $13, $25, $22
+\end{verbatim}
+No assumptions are made, this exactly captures the functionality of \texttt{sgtu}.
 
 \section*{Problem 8}
+
+\begin{verbatim}
+lui  $8,  0x5D2C
+slr  $8,  $8,  16
+lui  $8,  0x34
+lw   $8,  0($8)
+lui  $9,  0x9878
+slr  $9,  $9,  16
+lui  $9,  0xDABA
+beq  $5,  $8,  1
+jr   $9
+\end{verbatim}
+This code loads both 32-bit immediates into registers \texttt{\$8} and \texttt{\$9}, then uses a branch if equal to skip a jump instruction.
+The address stored at register \texttt{\$8} is dereferenced using the load word instruction, and then compared to register \texttt{\$5}.
+If register \texttt{\$5} and the value at \texttt{\$8} is equal, no jump happens due to the branch. Otherwise the values are not equal, and
+a jump will happen to the address given by the second immediate, which is stored in register \texttt{\$9}. An assumption is that registers
+\texttt{\$8} and \texttt{\$9} are not already being used.
+
 \section*{Problem 9}
+
+\begin{verbatim}
+addi $4,  $0,  1
+sll  $4,  $4,  24
+sw   $4,  8($0)
+lb   $4,  8($0)   # 0 if little endian, 1 if big endian
+sb   $4,  129($0)
+\end{verbatim}
+This code puts the hex value \texttt{0x01000000} into register \texttt{\$4}, then stores register \texttt{\$4} into main memory at addresses
+\(8\)-\(11\). Because this is done using a store word operation, the order of the bytes depend on whether the computer is little endian or big endian.
+The code then loads the byte at address \(8\) to check endianness. If the computer is big endian a \(1\) should have been loaded, otherwise a
+\(0\) should have been loaded. Finally the program stores the byte that was loaded into the byte at address \(129\).
 
 \end{document}
