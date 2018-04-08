@@ -9,8 +9,37 @@
 
 \section*{Problem 1}
 \section*{Problem 2}
+
+\begin{verbatim}
+addi $9,  $5,  -12
+add  $10, $5,  $8
+lw   $11, 3880220($10)
+sub  $11, $11, $13
+sw   $11, 3880220($9)
+\end{verbatim}
+
 \section*{Problem 3}
+
+\begin{verbatim}
+andi $8,  $14, 0x0003FC00
+sll  $8,  $8,  14
+andi $22, $22, 0x00FFFFFF
+or   $22, $22, $8
+\end{verbatim}
+
 \section*{Problem 4}
+
+\begin{verbatim}
+slt  $20, $0, $17 # $0 < $17, so $20=1
+bne  $20, $0, 1   # $20 != $0, so increase program counter by 1
+beq  $0, $0, 1    # skipped
+addi $20, $20, 2  # $20 = $20 + 2, so $20=3
+\end{verbatim}
+
+The final value of register \texttt{\$20} is \(3\). The flow of execution is such that the first instruction stores \(1\) in register
+\texttt{\$20}, which then causes the next instruction to branch. This skips the third instruction, and finally the last instruction adds
+\(2\) to register \texttt{\$20} and stores it, resulting in the value of \(3\).
+
 \section*{Problem 5}
 \section*{Problem 6}
 \section*{Problem 7}
