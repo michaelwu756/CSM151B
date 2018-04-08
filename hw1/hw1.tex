@@ -13,18 +13,26 @@
 \begin{verbatim}
 addi $9,  $5,  -12
 add  $10, $5,  $8
-lw   $11, 3880220($10)
-sub  $11, $11, $13
-sw   $11, 3880220($9)
+lui  $11, 0x351C
+slr  $11, $11, 16
+lui  $11, 0x3B
+add  $9,  $9,  $11
+add  $10, $10, $11
+lw   $12, 0($10)
+sub  $12, $12, $13
+sw   $12, 0($9)
 \end{verbatim}
 
 \section*{Problem 3}
 
 \begin{verbatim}
-andi $8,  $14, 0x0003FC00
+addi $8,  $0,  0xFF
+sll  $8,  $8,  10
+and  $9,  $14, $8
+sll  $9,  $9,  14
 sll  $8,  $8,  14
-andi $22, $22, 0x00FFFFFF
-or   $22, $22, $8
+and  $22, $22, $8
+or   $22, $22, $9
 \end{verbatim}
 
 \section*{Problem 4}
