@@ -9,13 +9,13 @@
 
 \section*{Problem 1}
 
-\paragraph{a)}
-
-\begin{figure}[ht]
+\begin{figure}[!ht]
     \begin{center}
-        \includegraphics[width=4.4in]{problem1a.png}
+        \includegraphics[width=4.8in]{problem1a.png}
     \end{center}
 \end{figure}
+
+\paragraph{a)}
 
 I have added three multiplexers, one to update the program counter to the target value, one to input the next instruction as a write
 value, and one to select register \(31\), which corresponds to \texttt{\$ra}. On the upper left the target value is shifted left by \(2\)
@@ -116,16 +116,54 @@ program would not change.
 
 \section*{Problem 4}
 
+In the multicycle implementation, asserting \texttt{ALUSrcA} incorrectly has no visible effect when \texttt{RegWrite} is asserted, as the result of the ALU
+is not used in the next cycle. Thus the only situation where this hardware fault would have a visible effect is during states 2, 6, and 8 in the finite state
+machine. This is because \texttt{ALUSrcA} is asserted while \texttt{RegWrite} should be unasserted.
+
+During state 8, the hardware fault causes \texttt{beq} to store the branch target address into the register \texttt{rt}. In state 6, the lower half of the instruction
+is used to calculate a branch target address, which is stored in \texttt{rt}. So R-format instructions will have the effect of storing some
+garbage value in \texttt{rt}. However, if \texttt{rd} is the same as \texttt{rt}, this will have no visible effect as the write to \texttt{rd} in state 7
+will overwrite the write to \texttt{rt}. During state 2, \texttt{lw} instructions will have no visible change, as state 4 overwrites the garbage value written to \texttt{rt}.
+However, \texttt{sw} instructions will set \texttt{rt} to some garbage value.
+
 \section*{Problem 5}
 
 \paragraph{a)}
 
+I will modify the datapath to add another ALU that is only used to increment the register number given by \texttt{rt}. This will be fed to a multiplexer to select
+whether we read the register the \texttt{rt} or \(\texttt{rt}+1\). Then I will add an input to the multiplexer controlled by \texttt{ALUSrcA} which is \texttt{ALUOut},
+so that I can increment \texttt{ALUOut} by 4. Then \texttt{swdbl} requires one additional state after state 5, as the register \(\texttt{rt}+1\) should be read in state
+5 and the memory address calculation for the next memory location should happen in one additional state.
+
+\begin{figure}[!ht]
+    \begin{center}
+        \includegraphics[width=4.8in]{problem5b.png}
+    \end{center}
+\end{figure}
+
 \paragraph{b)}
+
+The modified datapath is shown above. There is a dedicated circuit with an ALU and a register that calculates the register number following \texttt{rt}, and a
+multiplexer to choose which to read. Additionally \texttt{ALUSrcA} is expanded by one bit in order to add a multiplexer input from \texttt{ALUOut} that
+allows for \texttt{ALUOut} to be incremented by 4.
 
 \paragraph{c)}
 
+Yes, a signal into the additional ALU should always send an add signal, and \texttt{ReadRtInc} controls whether we should read \texttt{rt} or \(\texttt{rt}+1\).
+
 \paragraph{d)}
 
+\begin{figure}[!ht]
+    \begin{center}
+        \includegraphics[width=4.3in]{problem5d.png}
+    \end{center}
+\end{figure}
+
+The modified state diagram is shown above. The control signal \texttt{ALUSrcA} has been extended by one bit, and an additional state has been added. Additionally,
+in state 5 we perform the memory read from the next register and increment the memory address to store into.
+
 \paragraph{e)}
+
+It takes 6 cycles to execute \texttt{swdbl}.
 
 \end{document}
