@@ -71,7 +71,7 @@ recf:
   add  $s1, $v0,   $zero
   srl  $a0, $s0,   1
   addi $a0, $a0,   -1
-  jal recf
+  jal  recf
   add  $v0, $s1,   $v0
 
 finish:
@@ -83,11 +83,11 @@ finish:
 
 baseCase0:
   addi $v0, $zero, 3
-  ja finish
+  ja   finish
 
 baseCase1:
   addi $v0, $zero, 2
-  ja finish
+  ja   finish
 \end{verbatim}
 
 \section*{Problem 3}
