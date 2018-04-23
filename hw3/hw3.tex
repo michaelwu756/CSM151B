@@ -55,15 +55,64 @@ cause the program counter to jump to the target address and saves the next instr
 
 \section*{Problem 2}
 
+\begin{verbatim}
+recf:
+  addi $sp, $sp,   -12
+  sw   $ra, 0($sp)
+  sw   $s0, 4($sp)
+  sw   $s1, 8($sp)
+  addi $t0, $zero, 1
+  beq  $a0, $zero, baseCase0
+  beq  $a0, $t0,   baseCase1
+  add  $s0, $a0,   $zero
+  srl  $a0, $s0,   2
+  addi $a0, $a0,   1
+  jal  recf
+  add  $s1, $v0,   $zero
+  srl  $a0, $s0,   1
+  addi $a0, $a0,   -1
+  jal recf
+  add  $v0, $s1,   $v0
+
+finish:
+  lw   $ra, 0($sp)
+  lw   $s0, 4($sp)
+  lw   $s1, 8($sp)
+  addi $sp, $sp,   12
+  jr   $ra
+
+baseCase0:
+  addi $v0, $zero, 3
+  ja finish
+
+baseCase1:
+  addi $v0, $zero, 2
+  ja finish
+\end{verbatim}
+
 \section*{Problem 3}
 
 \paragraph{a)}
 
+Yes.
+
 \paragraph{b)}
+
+In a single cycle implementation, the number of cycles that a program takes to execute will be fixed. This is because each instruction takes one cycle,
+and the program will run a fixed number of instructions. So the only way that a program can change speed is if the time for a cycle changes. The time
+of a cycle is determined by the longest execution path in our implementation. So increasing the length of time of an \texttt{or} operation could increase
+the cycle time, if the \texttt{or} operation is on the longest execution path.
 
 \paragraph{c)}
 
+No.
+
 \paragraph{d)}
+
+Within the ALU is a ripple carry adder, which typically takes much more time to finish execution than the \texttt{or} gate. Electrical signals must propagate all
+the way through the adder, so this execution path should be much longer than the execution path for the \texttt{or} operation. Thus the \texttt{or} operation
+is most likely not on the longest execution path, and doubling its time would not increase the cycle time. Thus it is most likely that the execution time of the
+program would not change.
 
 \section*{Problem 4}
 
