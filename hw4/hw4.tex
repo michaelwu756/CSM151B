@@ -60,7 +60,7 @@ Let \(i\) be the number of instructions in the program. The cycles per instructi
         x&\approx 3.227 \text{ CPI}
 \end{align*}
 Then the overall cycles per instruction for the improved processor is
-\[\frac{0.82i\times 3.227+0.18i\times 3\text{ CPI}}{i} \approx 3.186\text{ CPI}\]
+\[\frac{0.82i\times 3.227\text{ CPI}+0.18i\times 3\text{ CPI}}{i} \approx 3.186\text{ CPI}\]
 
 \paragraph{b)}
 
@@ -102,16 +102,16 @@ of the load and store instructions. This allows them to immediately go to the in
 
 \section*{Problem 6}
 
-Since \texttt{lw} uses every stage of the pipeline, its latency will be \(1750\text{ps}\) in the pipelined processor. This is because the clock cycle
-in a pipelined processor will be equivalent to the latency of the longest stage, which is \(350\text{ps}\). So \texttt{lw} will execute over \(5\) clock
+Since \texttt{lw} uses every stage of the pipeline, its latency will be \(1750\text{ ps}\) in the pipelined processor. This is because the clock cycle
+in a pipelined processor will be equivalent to the latency of the longest stage, which is \(350\text{ ps}\). So \texttt{lw} will execute over \(5\) clock
 cycles. In the equivalent non-pipelined processor that uses a single cycle implementation, the clock cycle must accommodate the longest instruction.
-This would mean that the clock cycle length is the sum of all the latencies of the instruction stages, and so it would be \(1250\text{ps}\). So in
-the non-pipelined processor \texttt{lw} would have a latency of \(1250\text{ps}\).
+This would mean that the clock cycle length is the sum of all the latencies of the instruction stages, and so it would be \(1250\text{ ps}\). So in
+the non-pipelined processor \texttt{lw} would have a latency of \(1250\text{ ps}\).
 
 \section*{Problem 7}
 
-I would split the \texttt{ID} stage of the pipelined datapath into two, as this will decrease the latency of the longest stage to \(300\text{ps}\). So
-the new clock cycle time of the processor would be \(300\text{ps}\).
+I would split the \texttt{ID} stage of the pipelined datapath into two, as this will decrease the latency of the longest stage to \(300\text{ ps}\). So
+the new clock cycle time of the processor would be \(300\text{ ps}\).
 
 \section*{Problem 8}
 
@@ -133,12 +133,54 @@ or r1, r1, r2
 has data dependencies on both \(i_1\) and \(i_2\). There is a RAW dependency due to \(i_i\) writing to \texttt{r1} before \(i_3\) reads from \texttt{r1}.
 There is a Write After Write (WAW) dependency due to \(i_1\) writing to \texttt{r1} before \(i_3\) writes to \texttt{r1}. There is a RAW dependency due to
 \(i_2\) writing to \texttt{r2} before \(i_3\) reads from \texttt{r2}. Finally, there is a WAR dependency due to \(i_2\) reading from \texttt{r1} before \(i_3\)
-writes to \texttt{r1}.
+writes to \texttt{r1}. Note that in our simple pipelined processor we only really need to be concerned about RAW dependencies, since we do not do out-of-order
+execution. So WAR and WAW dependencies will be taken care of and not change the execution in any way.
 
 \section*{Problem 9}
 
+I will use
+\begin{verbatim}
+add $zero, $zero, $zero
+\end{verbatim}
+as my \texttt{nop}. Then we need to ensure that all dependencies are taken care of. As noted before, WAR and WAW will be taken care of already because our processor
+does not do out of order execution. They are not a hazard, but the RAW dependencies represent a data hazard. To ensure that the RAW dependencies are taken care of,
+we must ensure that the \texttt{ID} stage of an instruction occurs after the \texttt{WB} stage of the previous instruction. This means that we need three
+\texttt{nop} instructions between each original instruction, because \texttt{WB} is the fifth stage and \texttt{ID} is the second stage. So our final program
+will be the code shown below.
+\begin{verbatim}
+or  r1,    r2,    r3
+add $zero, $zero, $zero
+add $zero, $zero, $zero
+add $zero, $zero, $zero
+or  r2,    r1,    r4
+add $zero, $zero, $zero
+add $zero, $zero, $zero
+add $zero, $zero, $zero
+or  r1,    r1,    r2
+\end{verbatim}
+
 \section*{Problem 10}
 
+As before, data hazards occur due to the RAW dependencies. But with full forwarding, they should not slow down execution and no \texttt{nop} instructions are
+required. The instruction \(i_2\) will receive its ALU input through forwarding the contents of the \texttt{EX/MEM} register from \(i_1\), and the instruction
+\(i_3\) will receive its ALU input through forwarding the contents of the \texttt{EX/MEM} register from \(i_2\) and the contents of the \texttt{MEM/WB} register from
+\(i_1\).
+
 \section*{Problem 11}
+
+\paragraph{a)}
+
+For the \texttt{sw} instruction, no control signals need to be asserted for the \texttt{IF} and \texttt{ID} stages. During the \texttt{EX} stage, the signals
+\texttt{ALUOp = 00} and \texttt{ALUSrc = 1} are asserted. In this stage \texttt{MemWrite} is asserted, but it does not do anything and is passed along to the
+next stage of execution. In the \texttt{MEM} stage, the signal \texttt{MemWrite} is asserted and performs the writing of data to memory. In the \texttt{WB} stage,
+no control signals are asserted.
+
+\paragraph{b)}
+
+For the \texttt{sub} instruction, no control signals need to be asserted for the \texttt{IF} and \texttt{ID} stages. During the \texttt{EX} stage, the signals
+\texttt{RegDst = 1}, \texttt{ALUOp = 10}, and \texttt{ALUSrc = 0} are asserted. In this stage \texttt{RegWrite} and \texttt{MemtoReg = 0} are asserted, but they
+not do anything and are passed along to the next stage of execution. In the \texttt{MEM} stage, again \texttt{RegWrite} and \texttt{MemtoReg = 0} are asserted,
+but they do not do anything and are passed along to the next stage of execution. In the \texttt{WB} stage, the signals \texttt{RegWrite} and \texttt{MemtoReg = 0}
+are asserted, storing the results of the ALU operation into a register.
 
 \end{document}
