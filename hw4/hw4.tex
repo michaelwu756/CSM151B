@@ -102,9 +102,38 @@ of the load and store instructions. This allows them to immediately go to the in
 
 \section*{Problem 6}
 
+Since \texttt{lw} uses every stage of the pipeline, its latency will be \(1750\text{ps}\) in the pipelined processor. This is because the clock cycle
+in a pipelined processor will be equivalent to the latency of the longest stage, which is \(350\text{ps}\). So \texttt{lw} will execute over \(5\) clock
+cycles. In the equivalent non-pipelined processor that uses a single cycle implementation, the clock cycle must accommodate the longest instruction.
+This would mean that the clock cycle length is the sum of all the latencies of the instruction stages, and so it would be \(1250\text{ps}\). So in
+the non-pipelined processor \texttt{lw} would have a latency of \(1250\text{ps}\).
+
 \section*{Problem 7}
 
+I would split the \texttt{ID} stage of the pipelined datapath into two, as this will decrease the latency of the longest stage to \(300\text{ps}\). So
+the new clock cycle time of the processor would be \(300\text{ps}\).
+
 \section*{Problem 8}
+
+The instruction \(i_1\)
+\begin{verbatim}
+or r1, r2, r3
+\end{verbatim}
+has no data dependencies. The instruction \(i_2\)
+\begin{verbatim}
+or r2, r1, r4
+\end{verbatim}
+has a data dependency on the first instruction \(i_1\). There is a Read After Write (RAW) data dependency, and it occurs due to \(i_1\) writing to
+\texttt{r1} before \(i_2\) reads from \texttt{r1}. There is also a Write After Read (WAR) dependency due to \(i_1\) reading from \texttt{r2} before
+\(i_2\) writes to \texttt{r2}.
+The instruction \(i_3\)
+\begin{verbatim}
+or r1, r1, r2
+\end{verbatim}
+has data dependencies on both \(i_1\) and \(i_2\). There is a RAW dependency due to \(i_i\) writing to \texttt{r1} before \(i_3\) reads from \texttt{r1}.
+There is a Write After Write (WAW) dependency due to \(i_1\) writing to \texttt{r1} before \(i_3\) writes to \texttt{r1}. There is a RAW dependency due to
+\(i_2\) writing to \texttt{r2} before \(i_3\) reads from \texttt{r2}. Finally, there is a WAR dependency due to \(i_2\) reading from \texttt{r1} before \(i_3\)
+writes to \texttt{r1}.
 
 \section*{Problem 9}
 
