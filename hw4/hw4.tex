@@ -1,5 +1,6 @@
 \documentclass[12pt]{article}
 \usepackage{amsmath}
+\usepackage{graphicx}
 \begin{document}
 \title{Computer Science M151B, Homework 4}
 \date{April 30th, 2018}
@@ -69,11 +70,35 @@ It would take \(194.7\text{ s}\) to execute the program on the improved processo
 
 \paragraph{a)}
 
+I would add an instruction memory unit so that the final step of load and store can be done in parallel with the instruction fetch. The last
+state of both the load and store instructions would point to the instruction decode step, reducing the cycles per instruction by 1.
+
+\begin{figure}[!ht]
+    \begin{center}
+        \includegraphics[width=4.8in]{problem5b.png}
+    \end{center}
+\end{figure}
+
 \paragraph{b)}
+
+The datapath changes above show the addition of the instruction memory unit. I input a zero to the \texttt{write data} signal of the instruction memory
+unit since it should not be doing any writing, so this value will never be used.
 
 \paragraph{c)}
 
+The control signal \texttt{IorD} is renamed to \texttt{InstRead}, since there is no need for a multiplexer to choose between reading instruction memory or
+regular memory. This signal controls whether to read from the address stored in the program counter or not.
+
+\begin{figure}[!ht]
+    \begin{center}
+        \includegraphics[width=4.7in]{problem5d.png}
+    \end{center}
+\end{figure}
+
 \paragraph{d)}
+
+The state changes are shown above. I have removed \texttt{IorD} and have allowed for the instruction fetch to happen at the same time as the last states
+of the load and store instructions. This allows them to immediately go to the instruction decode step, reducing the number of cycles required by 1.
 
 \section*{Problem 6}
 
