@@ -61,7 +61,7 @@ if (MEM.PCSrc != 1 and MEM/WB.PCSrc != 1 and
     then PCWrite = 0 else PCWrite = 1
 \end{verbatim}
 Note that I set \texttt{PCWrite = 1} when \texttt{MEM.PCSrc = 1} to allow for the branch to update the program counter if it is taken. I then
-set \texttt{PCWrite = 1} and \texttt{IF/IDWrite = 1} when \texttt{MEM/WB.PCSrc = 1} to allow for the instruction at the branch target address to be read, and the
+set \texttt{PCWrite = 1} and \texttt{IF/IDWrite = 1} when \texttt{MEM/WB.PCSrc = 1} to allow for the instruction at the branch target address to be read and the
 program counter to be updated in the next cycle.
 
 \pagebreak
@@ -78,7 +78,7 @@ program counter to be updated in the next cycle.
 
 \paragraph{a)}
 
-Since the \texttt{IF.Flush} signal is asserted whenever a branch intstruction occurs, this corresponds to asserting it when an opcode of 4 is read. So this
+Since the \texttt{IF.Flush} signal is asserted whenever a branch instruction occurs, this corresponds to asserting it when an opcode of 4 is read. So this
 circuit implements that logic.
 
 \begin{figure}[!ht]
@@ -90,7 +90,7 @@ circuit implements that logic.
 \paragraph{b)}
 
 The \texttt{IF.Flush} signal will be used to clear out the register by using a gate as shown in the figure above. The gate is placed after the
-multiplexer controlled by \texttt{IF/IDWrite}, so that \texttt{IF.Flush} has precendence over \texttt{IF/IDWrite}.
+multiplexer controlled by \texttt{IF/IDWrite}, so that \texttt{IF.Flush} has precedence over \texttt{IF/IDWrite}.
 
 \section*{Problem 6}
 
