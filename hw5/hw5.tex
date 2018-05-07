@@ -1,4 +1,5 @@
 \documentclass[12pt]{article}
+\usepackage{graphicx}
 \begin{document}
 \title{Computer Science M151B, Homework 5}
 \date{May 7th, 2018}
@@ -7,15 +8,61 @@
 
 \section*{Problem 1}
 
+Yes, the \texttt{PCSrc} signal could be computed in the \texttt{EX} stage, as the zero of the ALU output and the \texttt{Branch} signal are both
+available in \texttt{EX}. An advantage of making this change would be to reduce the branch penalty from three cycles to two cycles, since we can
+update the program counter one cycle earlier. However, since this adds an \texttt{and} gate to the output of the ALU, this could potentially
+lead to a higher cycle time. The book shows a better implementation where the branch computed in the \texttt{ID} stage, reducing the branch penalty
+to one cycle, which is why this change is not used.
+
 \section*{Problem 2}
 
 \paragraph{a)}
 
+The value of \texttt{PCSrc} is 0 when this instruction is in the \texttt{MEM} stage. This is because there is no branching going on, so the program counter
+should update normally.
+
 \paragraph{b)}
+
+The value of \texttt{PCSrc} is 1 when this instruction is in the \texttt{MEM} stage. This is because this branch instruction checks if register \texttt{\$5}
+is equal to itself, which must be true. So the branch will be taken and the program counter will be updated to the address given in the branch instruction.
 
 \section*{Problem 3}
 
+This series of instructions will execute over 9 cycles. On the fifth cycle, the first \texttt{add} instruction is in the \texttt{WB} stage, so register \texttt{\$2} is
+written. Additionally, the third \texttt{add} instruction is in the \texttt{ID} stage, so the registers \texttt{\$6} and \texttt{\$1} are being read.
+
 \section*{Problem 4}
+
+\begin{figure}[!ht]
+        \hspace*{-4cm}
+        \begin{center}
+                \includegraphics[width=5in]{problem4.png}
+        \end{center}
+        \hspace*{-4cm}
+\end{figure}
+
+The modified hazard detection unit is shown above. The goal of this modification is to always stall for three cycles after every branch.
+I have added the \texttt{Branch} control signal to the \texttt{MEM/WB} registers, so that a signal is available to determine if a branch instruction
+is in the \texttt{WB} stage. I have also added the \texttt{MEM/WB.PCSrc} signal to aid in fetching a new instruction if the branch is taken. The hazard detection
+unit stalls by injecting 0 into the \texttt{ID/EX} registers. It also sets \texttt{IF/IDWrite} and \texttt{PCWrite} to 0 to prevent a new instruction
+from being loaded.
+
+The logic for the outputs of the hazard detection unit is shown below.
+\begin{verbatim}
+if (ID/EX.Branch or EX/MEM.Branch or MEM/WB.Branch)
+  then ID/EXZero = 1 else ID/EXZero = 0
+
+if (MEM/WB.PCSrc != 1 and
+  (ID/EX.Branch or EX/MEM.Branch or MEM/WB.Branch))
+    then IF/IDWrite = 0 else IF/IDWrite = 1
+
+if (MEM.PCSrc != 1 and MEM/WB.PCSrc != 1 and
+  (ID/EX.Branch or EX/MEM.Branch or MEM/WB.Branch))
+    then PCWrite = 0 else PCWrite = 1
+\end{verbatim}
+Note that I set \texttt{PCWrite = 1} when \texttt{MEM.PCSrc = 1} to allow for the branch to update the program counter if it is taken. I then
+set \texttt{PCWrite = 1} and \texttt{IF/IDWrite = 1} when \texttt{MEM/WB.PCSrc = 1} to allow for the instruction at the branch target address to be read, and the
+program counter to be updated in the next cycle.
 
 \section*{Problem 5}
 
