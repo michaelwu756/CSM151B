@@ -64,11 +64,33 @@ Note that I set \texttt{PCWrite = 1} when \texttt{MEM.PCSrc = 1} to allow for th
 set \texttt{PCWrite = 1} and \texttt{IF/IDWrite = 1} when \texttt{MEM/WB.PCSrc = 1} to allow for the instruction at the branch target address to be read, and the
 program counter to be updated in the next cycle.
 
+\pagebreak
+
 \section*{Problem 5}
+
+\begin{figure}[!ht]
+        \hspace*{-4cm}
+        \begin{center}
+                \includegraphics[width=4.8in]{problem5a.png}
+        \end{center}
+        \hspace*{-4cm}
+\end{figure}
 
 \paragraph{a)}
 
+Since the \texttt{IF.Flush} signal is asserted whenever a branch intstruction occurs, this corresponds to asserting it when an opcode of 4 is read. So this
+circuit implements that logic.
+
+\begin{figure}[!ht]
+        \begin{center}
+                \includegraphics[width=2.5in]{problem5b.png}
+        \end{center}
+\end{figure}
+
 \paragraph{b)}
+
+The \texttt{IF.Flush} signal will be used to clear out the register by using a gate as shown in the figure above. The gate is placed after the
+multiplexer controlled by \texttt{IF/IDWrite}, so that \texttt{IF.Flush} has precendence over \texttt{IF/IDWrite}.
 
 \section*{Problem 6}
 
