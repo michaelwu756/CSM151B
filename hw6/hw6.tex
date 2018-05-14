@@ -1,5 +1,7 @@
 \documentclass[12pt]{article}
 \usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multirow}
 \begin{document}
 \title{Computer Science M151B, Homework 6}
 \date{May 14th, 2018}
@@ -70,10 +72,56 @@ last correct instruction executed and the start of the exception handler.
 
 \paragraph{a)}
 
+I would simply add a new control signal from the control unit called \texttt{IllegalOp}, store it into the \texttt{ID/EX} register,
+then wire that back to the control unit. This way exceptions are only handled during the \texttt{EX} stage, so conflicts between
+exceptions from instructions which are in the pipeline at the same time do not occur. Then based on the \texttt{IllegalOp} signal,
+the control unit can output the correct signals to flush the registers and change the program counter to the address of the exception
+handler.
+
+\pagebreak
+
+\begin{figure}[!ht]
+        \hspace*{-4cm}
+        \begin{center}
+                \includegraphics[width=5in]{problem6b.png}
+        \end{center}
+        \hspace*{-4cm}
+\end{figure}
+
 \paragraph{b)}
+
+The modification to the datapath is shown in the figure above.
 
 \paragraph{c)}
 
+The signal \texttt{IllegalOp} will be added as shown above. It will be fed back into the control unit during the \texttt{EX} stage which will
+eliminate problems with overflows and illegal instructions occuring at the same time. A combinational circuit that checks for all illegal opcodes
+can implement this signal.
+
 \paragraph{d)}
+
+The control unit logic can be implement with the following table. I assume that \texttt{CauseSRC} will be 0 to indicate an overflow, and 1 to indicate an
+illegal operation.
+
+\begin{center}
+        \hspace*{-4cm}
+        \begin{tabular}{c|c|c|c|c|c|c}
+                & Signals & Normal & Branch & IllegalID & Overflow & IllegalEX\\
+                \hline
+                \multirow{3}{*}{Inputs} & Overflow & 0 & 0 & 0 & 1 & x\\
+                & IllegalOp & 0 & 0 & 0 & 0 & 1\\
+                & Opcode & Legal, not 4 & 4 & Illegal & x & x\\
+                \hline
+                \multirow{8}{*}{Outputs} & IF.Flush & 0 & 1 & 0 & 1 & 1\\
+                & ID.Flush & 0 & 0 & 0 & 1 & 1\\
+                & EX.Flush & 0 & 0 & 0 & 1 & 1\\
+                & IllegalOp & 0 & 0 & 1 & x & x\\
+                & Orig. Signals & Orig. & Orig. & x & x & x\\
+                & EPCWrite & 0 & 0 & 0 & 1 & 1\\
+                & CauseWrite & 0 & 0 & 0 & 1 & 1\\
+                & CauseSrc & x & x & x & 0 & 1
+        \end{tabular}
+        \hspace*{-4cm}
+\end{center}
 
 \end{document}
