@@ -1,5 +1,5 @@
 \documentclass[12pt]{article}
-\usepackage{graphicx}
+\usepackage{amsmath}
 \begin{document}
 \title{Computer Science M151B, Homework 6}
 \date{May 14th, 2018}
@@ -8,9 +8,33 @@
 
 \section*{Problem 1}
 
+The average rotational latency will be
+\[\frac{\frac{1}{2}\text{ Rotations}}{5400\text{ RPM}\times \frac{1 \text{ Minute}}{60 \text{ s}}}=0.00555\ldots \text{ s}\]
+and because the data is located sequentially in memory, the additional overhead of reading the two additional sectors after the first is negligible.
+Thus we can add the \(0.004 \text{ s}\) seek time to the rotational latency to obtain the total time to read the data, which is approximately
+\[0.0096\text{ s}\]
+
 \section*{Problem 2}
 
+Transferring 64 bits of data from the I/O device to memory will take two bus transfers, as the CPU must perform a read and a write. Thus
+the maximum possible bandwidth at which data can be transferred between the device and memory is
+\[\frac{64 \text{ bits} \times \frac{1 \text{ byte}}{8 \text{ bits}}}{2\times 12 \text{ ns} \times \frac{1 \text{ s}}{10^9 \text{ ns}}}
+=3.33333333 \times 10^8 \,\frac{\text{bytes}}{\text{s}}\]
+
 \section*{Problem 3}
+
+The total time it takes for a disk access is
+\[0.0045 \text{ s}
++0.0003 \text{ s}
++\frac{\frac{1}{2}\text{ Rotations}}{12000\text{ RPM}\times \frac{1 \text{ Minute}}{60 \text{ s}}}
++\frac{4 \text{ KB}\times \frac{1\text{ MB}}{1000 \text{ KB}}}{80 \frac{\text{ MB}}{\text{s}}}
+=0.00735 \text{ s}\]
+and the processing time takes
+\[\frac{2\times 10^7}{5\times 10^9 \text{ Hz}}=0.004 \text{ s}\]
+Because there are two disk accesses and one processing step, the total time to process a block is
+\[2\times 0.00735 \text{ s} + 0.004 \text{ s} = 0.0187 \text{ s}\]
+and so the number of blocks processed per second is
+\[\frac{1 \text{ Block}}{0.0187 \text{ s}}=53.476 \,\frac{\text{Blocks}}{\text{s}}\]
 
 \section*{Problem 4}
 
