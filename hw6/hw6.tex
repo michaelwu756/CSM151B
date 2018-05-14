@@ -9,7 +9,7 @@
 \section*{Problem 1}
 
 The average rotational latency will be
-\[\frac{\frac{1}{2}\text{ Rotations}}{5400\text{ RPM}\times \frac{1 \text{ Minute}}{60 \text{ s}}}=0.00555\ldots \text{ s}\]
+\[\frac{\frac{1}{2}\text{ rotations}}{5400\text{ RPM}\times \frac{1 \text{ minute}}{60 \text{ s}}}=0.00555\ldots \text{ s}\]
 and because the data is located sequentially in memory, the additional overhead of reading the two additional sectors after the first is negligible.
 Thus we can add the \(0.004 \text{ s}\) seek time to the rotational latency to obtain the total time to read the data, which is approximately
 \[0.0096\text{ s}\]
@@ -26,7 +26,7 @@ the maximum possible bandwidth at which data can be transferred between the devi
 The total time it takes for a disk access is
 \[0.0045 \text{ s}
 +0.0003 \text{ s}
-+\frac{\frac{1}{2}\text{ Rotations}}{12000\text{ RPM}\times \frac{1 \text{ Minute}}{60 \text{ s}}}
++\frac{\frac{1}{2}\text{ rotations}}{12000\text{ RPM}\times \frac{1 \text{ minute}}{60 \text{ s}}}
 +\frac{4 \text{ KB}\times \frac{1\text{ MB}}{1000 \text{ KB}}}{80 \frac{\text{ MB}}{\text{s}}}
 =0.00735 \text{ s}\]
 and the processing time takes
@@ -34,19 +34,37 @@ and the processing time takes
 Because there are two disk accesses and one processing step, the total time to process a block is
 \[2\times 0.00735 \text{ s} + 0.004 \text{ s} = 0.0187 \text{ s}\]
 and so the number of blocks processed per second is
-\[\frac{1 \text{ Block}}{0.0187 \text{ s}}=53.476 \,\frac{\text{Blocks}}{\text{s}}\]
+\[\frac{1 \text{ block}}{0.0187 \text{ s}}=53.476 \,\frac{\text{blocks}}{\text{s}}\]
 
 \section*{Problem 4}
 
 \paragraph{a)}
 
+Assuming that the process does nothing but poll while waiting for the device to send data, the polling will take
+\[0.00002 \text{ s} \times 1.8 \times 10^9 \text{ Hz} = 36000 \text{ cycles}\]
+and the processing will take an additional 1000 cycles. Since 1000 bytes need to be processed, the entire operation
+takes 37 million cycles. I am assuming that the time spend waiting for the device to send data does not overlap with
+the time spent receiving and processing the data.
+
 \paragraph{b)}
+
+Since 36000 cycles will be spent waiting for the device and 200 cycles are needed as overhead for handling interrupts,
+this leaves 35800 cycles between each data read that can be used by another process. Since there will be 1000 bytes
+read, this means that overall there are 35.8 million cycles available for use over the entire operation.
 
 \section*{Problem 5}
 
 \paragraph{a)}
 
+No.
+
 \paragraph{b)}
+
+The forwarding unit only affects instructions after the ones currently in the pipeline. Since normal execution occurs up until
+the \texttt{EX} stage of the instruction that generates the exception, all instructions prior to that instruction have the
+correct data forwarded. The modified processor inserts bubbles into the pipeline so that these instructions complete before
+starting the exception handler. So the forwarding unit does not need to change, as there are no data dependencies from the
+last correct instruction executed and the start of the exception handler.
 
 \section*{Problem 6}
 
