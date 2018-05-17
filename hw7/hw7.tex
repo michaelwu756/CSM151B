@@ -1,5 +1,6 @@
 \documentclass[12pt]{article}
 \usepackage{amsmath}
+\usepackage{tikz}
 \begin{document}
 \title{Computer Science M151B, Homework 7}
 \date{May 21st, 2018}
@@ -40,13 +41,72 @@ that has changed somewhere higher in the cache, the CPU may accidentally use the
 Interrupt-driven I/O would be preferred for simpler devices where the performance penalty is small compared to DMA-based I/O. If a lot of data is not being transferred
 to memory at a time, then the advantage of DMA-based I/O being able to pass data quickly to memory is diminished. For example, if there is a sensor that generates one byte
 every second and sends it to the processor, then interrupt-driven I/O would be preferred. This is because the device does not use a lot of CPU time, so the performance improvement
-of DMA-based I/O would not be significant. If DMA-based I/O were used, this would add unecessary complexity.
+of DMA-based I/O would not be significant. If DMA-based I/O were used, this would add unnecessary complexity.
+
+\pagebreak
 
 \section*{Problem 3}
 
+\begin{figure}[!ht]
+        \vspace*{-1.5cm}
+        \hspace*{-5cm}
+        \begin{center}
+                \includegraphics[width=5.4in]{problem3a.png}
+        \end{center}
+        \hspace*{-5cm}
+        \vspace*{-4cm}
+\end{figure}
+
+\clearpage
+
 \paragraph{a)}
 
+My arbiter design is shown above. It uses D flip-flops to keep track of a state variable \(S\) which indicates which device has the highest priority. This
+signal gets decoded into four signals, each of which enables four of the sixteen \texttt{and} gates that control which grant line the arbiter will assert. I \texttt{or}
+together the outputs of the \texttt{and} gates that correspond to a grant for a particular device in order to get the output grant signals. Finally,
+if a grant is given then the state variable is updated to the next highest priority device. If no grant is given, the \texttt{nor} gate ensures that
+the state stays at the same value. I also use D flip-flops on the input request lines to ensure that the grant stays asserted for a whole cycle. The logic that this design implements is shown below.
+
+\[
+        \begin{array}{c|c|c|c|c|c||c|c|c|c|c|c}
+                \multicolumn{6}{c||}{\text{Inputs}} & \multicolumn{6}{|c}{\text{Outputs}}\\
+                \hline
+                R_0 & R_1 & R_2 & R_3 & S_1 & S_0 & G_0 & G_1 & G_2 & G_3 & S_1 & S_0 \\
+                \hline
+                0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+                0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1 \\
+                0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
+                0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 1 & 1 \\
+                1 & x & x & x & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 1 \\
+                0 & 1 & x & x & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 0 \\
+                0 & 0 & 1 & x & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 1 \\
+                0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\
+                x & 1 & x & x & 0 & 1 & 0 & 1 & 0 & 0 & 1 & 0 \\
+                x & 0 & 1 & x & 0 & 1 & 0 & 0 & 1 & 0 & 1 & 1 \\
+                x & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 1 & 0 & 0 \\
+                1 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 1 \\
+                x & x & 1 & x & 1 & 0 & 0 & 0 & 1 & 0 & 1 & 1 \\
+                x & x & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\
+                1 & x & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 1 \\
+                0 & 1 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 1 & 0 \\
+                x & x & x & 1 & 1 & 1 & 0 & 0 & 0 & 1 & 0 & 0 \\
+                1 & x & x & 0 & 1 & 1 & 1 & 0 & 0 & 0 & 0 & 1 \\
+                0 & 1 & x & 0 & 1 & 1 & 0 & 1 & 0 & 0 & 1 & 0 \\
+                0 & 0 & 1 & 0 & 1 & 1 & 0 & 0 & 1 & 0 & 1 & 1
+        \end{array}
+\]
+
+\pagebreak
+
+\begin{figure}[!ht]
+        \begin{center}
+                \includegraphics[width=3in]{problem3b.png}
+        \end{center}
+\end{figure}
+
 \paragraph{b)}
+
+The timing diagram for my design is shown above. The arbiter first grants the bus to device 1, then device 2.
 
 \section*{Problem 4}
 
