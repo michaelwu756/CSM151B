@@ -31,6 +31,17 @@ and the number of bus transactions per second is
 
 \section*{Problem 2}
 
+In DMA-based I/O, an interrupt must still be given to the CPU to indicate that the device controller has finished an I/O request and put some data in memory.
+The difference between interrupt-driven I/O and DMA-based I/O is that the interrupt-driven I/O will send an interrupt for every piece of data. The data in
+interrupt-driven I/O always passes through the CPU prior to going to memory, whereas in DMA-based I/O the device controller can directly modify memory.
+Thus DMA-based I/O introduces complexity into a computer's design because it may cause cache coherency problems. If the device controller modifies data in memory
+that has changed somewhere higher in the cache, the CPU may accidentally use the wrong data which would lead to incorrect behaviour.
+
+Interrupt-driven I/O would be preferred for simpler devices where the performance penalty is small compared to DMA-based I/O. If a lot of data is not being transferred
+to memory at a time, then the advantage of DMA-based I/O being able to pass data quickly to memory is diminished. For example, if there is a sensor that generates one byte
+every second and sends it to the processor, then interrupt-driven I/O would be preferred. This is because the device does not use a lot of CPU time, so the performance improvement
+of DMA-based I/O would not be significant. If DMA-based I/O were used, this would add unecessary complexity.
+
 \section*{Problem 3}
 
 \paragraph{a)}
