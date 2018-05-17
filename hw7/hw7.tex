@@ -1,4 +1,5 @@
 \documentclass[12pt]{article}
+\usepackage{amsmath}
 \begin{document}
 \title{Computer Science M151B, Homework 7}
 \date{May 21st, 2018}
@@ -6,6 +7,27 @@
 \maketitle
 
 \section*{Problem 1}
+
+For the transfer using 4-word blocks, each transfer will take 1 cycle to send the address to memory, 24 cycles to access memory for the first
+set of words, 1 cycle to send the data from memory, and 2 idle clock cycles. So each 4-word block takes 28 cycles to read. This is 140 ns for each
+4-word block. Thus the sustained bandwidth of the read is
+\[4\,\frac{\text{words}}{\text{block}}\times 4\,\frac{\text{bytes}}{\text{word}}\times \frac{1 \text{ block}}{1.4 \times 10^{-7} \text{ s}}
+=1.1423 \times 10^8\,\frac{\text{bytes}}{\text{s}}\]
+The latency to transfer 256 words is then
+\[\frac{256 \text{ words}}{4\,\frac{\text{words}}{\text{block}}}\times 140\,\frac{\text{ns}}{\text{block}}=8960 \text{ ns}\]
+and the number of bus transactions per second is
+\[\frac{1 \text{ transaction}}{1.4 \times 10^{-7} \text{ s}}=7.143 \times 10^{6}\,\frac{\text{transactions}}{\text{s}}\]
+
+For the transfer using 16-word blocks, each transfer will take 1 cycle to send the address to memory, 24 cycles to access memory for the first
+set of words, 1 cycle for each 4-word block to send the data from memory, and 2 idle clock cycles for each 4-word block. So each 16-word block
+takes 37 cycles to read. This is 185 ns for each
+16-word block. Thus the sustained bandwidth of the read is
+\[16\,\frac{\text{words}}{\text{block}}\times 4\,\frac{\text{bytes}}{\text{word}}\times \frac{1 \text{ block}}{1.85 \times 10^{-7} \text{ s}}
+=3.4595 \times 10^8\,\frac{\text{bytes}}{\text{s}}\]
+The latency to transfer 256 words is then
+\[\frac{256 \text{ words}}{16\,\frac{\text{words}}{\text{block}}}\times 185\,\frac{\text{ns}}{\text{block}}=2960 \text{ ns}\]
+and the number of bus transactions per second is
+\[\frac{1 \text{ transaction}}{1.85 \times 10^{-7} \text{ s}}=5.405 \times 10^{6}\,\frac{\text{transactions}}{\text{s}}\]
 
 \section*{Problem 2}
 
