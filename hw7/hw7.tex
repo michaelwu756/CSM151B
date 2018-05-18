@@ -49,11 +49,9 @@ of DMA-based I/O would not be significant. If DMA-based I/O were used, this woul
 
 \begin{figure}[!ht]
         \vspace*{-1.5cm}
-        \hspace*{-5cm}
         \begin{center}
                 \includegraphics[width=5.4in]{problem3a.png}
         \end{center}
-        \hspace*{-5cm}
         \vspace*{-4cm}
 \end{figure}
 
@@ -112,11 +110,51 @@ The timing diagram for my design is shown above. The arbiter first grants the bu
 
 \paragraph{a)}
 
+I will add another data memory unit in the \texttt{WB} stage. During the \texttt{sb} instruction in the \texttt{MEM} stage, the data memory
+performs a read from the given address. Then in the \texttt{WB} stage, the read data will be concatenated with the lowest 8 bits of the register
+that contains the data to be stored. There are four ways to perform this concatenation based on the lowest two bits of the store address, so a multiplexer
+will be used to choose which location to place the byte. Then the additional data memory unit is used to store the concatenated data in the store address.
+
+\begin{figure}[!ht]
+        \begin{center}
+                \hspace*{-4cm}
+                \includegraphics[width=6.5in]{problem4b.png}
+                \hspace*{-4cm}
+        \end{center}
+\end{figure}
+
 \paragraph{b)}
+
+The following figure shows my modifications. Note that I do not include forwarding between the \texttt{WB} and \texttt{MEM} stages to correct for any data dependencies
+between a \texttt{lw} or \texttt{sw} that follows a \texttt{sb} instruction. To implement forwarding, I would have to check if the target address of the \texttt{lw} or
+\texttt{sw} is the same as the \texttt{sb}, and either replace the read contents for \texttt{lw} or have the write for \texttt{sw} override the write for \texttt{sb}.
+
+Note that the label \texttt{Write Byte [31:24]} is a 32-bit signal that indicates the read data with bits 24 to 31 replaced by the 8 bit \texttt{Write Byte} signal, and
+similarly for the other four inputs to the multiplexer.
 
 \paragraph{c)}
 
+A new control signal called \texttt{WBDataWrite} is needed, which controls the write in the WB stage.
+
 \paragraph{d)}
+
+The changes to the control unit are shown in the following table.
+\begin{center}
+       {\scriptsize
+        \hspace*{-4cm}
+        \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c}
+                Instruction & \texttt{RegDst} & \texttt{ALUOp1} & \texttt{ALUOp0} & \texttt{ALUSrc} & \texttt{Branch} & \texttt{MemRead}
+                & \texttt{MemWrite} & \texttt{RegWrite} & \texttt{MemtoReg} & \texttt{WBDataWrite}\\
+                \hline
+                R-Format & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\
+                \texttt{lw} & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 1 & 1 & 0\\
+                \texttt{sw} & x & 0 & 0 & 1 & 0 & 0 & 1 & 0 & x & 0\\
+                \texttt{sb} & x & 0 & 0 & 1 & 0 & 1 & 0 & 0 & x & 1\\
+                \texttt{beq} & x & 0 & 1 & 0 & 1 & 0 & 0 & 0 & x & 0
+        \end{tabular}
+        \hspace{-4cm}
+        }
+\end{center}
 
 \section*{Problem 5}
 
