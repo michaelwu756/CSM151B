@@ -158,6 +158,14 @@ The changes to the control unit are shown in the following table.
 
 \section*{Problem 5}
 
+Sequence A could be completed faster, as reads using DRAM only require a read-write cycle to ensure that the charge in the capacitors is refreshed,
+while writes require a read-modify-write cycle to change the data in the specified address. When writing, we must read before modifying because we can only write
+an entire row at once, so we must first know what the values stored in the row are. Then we change the specified bit, and write back. Thus writing has strictly more
+operations to perform than reading, so reading can be completed faster.
+
 \section*{Problem 6}
+
+There are 32 instruction bits and 32 data bits that can be read every cycle, so this would require at least 8 of the given chips to supply the required 64 bits
+of output. Thus the size of our memory would be \(2^{27}\) bits, or \(128\) Mibit.
 
 \end{document}
