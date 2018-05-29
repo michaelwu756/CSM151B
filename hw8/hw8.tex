@@ -28,6 +28,40 @@ could be 16 words.
 
 \section*{Problem 4}
 
+The cache information is shown below. Note that since these are 32-bit addresses, both the binary address and the tag would be
+extended by an additional 24 bits that are entirely zero. I have left them out for readability.
+\begin{center}
+        \begin{tabular}{c|c|c|c|c}
+                Word Address & Binary Address & Tag & Index & Hit/Miss\\
+                \hline
+                3 & 00000011 & 0000 & 001 & Miss\\
+                180 & 10110100 & 1011 & 010 & Miss\\
+                43 & 00101011 & 0010 & 101 & Miss\\
+                2 & 00000010 & 0000 & 001 & Hit\\
+                191 & 10111111 & 1011 & 111 & Miss\\
+                88 & 01011000 & 0101 & 100 & Miss\\
+                190 & 10111110 & 1011 & 111 & Hit\\
+                14 & 00001110 & 0000 & 111 & Miss\\
+                181 & 10110101 & 1011 & 010 & Hit\\
+                44 & 00101100 & 0010 & 110 & Miss\\
+                186 & 10111010 & 1011 & 101 & Miss\\
+                253 & 11111101 & 1111 & 110 & Miss
+        \end{tabular}
+\end{center}
+The final cache contents are shown below.
+\begin{center}
+        \begin{tabular}{c|c|c}
+                Block Number & Word Addresses & Tag \\
+                \hline
+                1 & 2-3 & 0000 \\
+                2 & 180-181 & 1011 \\
+                4 & 88-89 & 0101 \\
+                5 & 186-187 & 1011 \\
+                6 & 252-253 & 1111 \\
+                7 & 14-15 & 0000
+        \end{tabular}
+\end{center}
+
 \section*{Problem 5}
 
 \section*{Problem 6}
