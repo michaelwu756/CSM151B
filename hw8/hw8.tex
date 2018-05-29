@@ -64,9 +64,22 @@ The final cache contents are shown below.
 
 \section*{Problem 5}
 
+Assuming the cache is byte addressable, one miss will occur for every 16 accesses. Thus the miss rate is 6.25\%.
+The miss rate does not depend on the working set size, since no memory location is referenced more than once. So replacing
+block frames is not the reason for our misses, and we do not need to hold the working set in memory. The miss rate can
+vary with the size of the cache, but only if the cache size changes due to changing the block size. Adding or removing
+block frames will not change the miss rate. Increasing the block size will reduce the miss rate, as more accesses can occur
+before the program moves onto the next block of memory. The types of misses that occur in this program are compulsory misses.
+
 \section*{Problem 6}
 
+The miss rate with a 16 byte block size will be 12.5\%, the miss rate with a 64 byte block size will be 3.125\%, and the miss rate with a
+128 byte block size will be 1.5625\%. The workload is exploiting spacial locality.
+
 \section*{Problem 7}
+
+Since only the first access will be a miss and the working set size is 524288 bytes, one out of 524288 accesses will be a miss. Thus the
+miss rate will be 0.000190735\%.
 
 \section*{Problem 8}
 
