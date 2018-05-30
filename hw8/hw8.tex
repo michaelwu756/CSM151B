@@ -74,7 +74,7 @@ before the program moves onto the next block of memory. The types of misses that
 \section*{Problem 6}
 
 The miss rate with a 16 byte block size will be 12.5\%, the miss rate with a 64 byte block size will be 3.125\%, and the miss rate with a
-128 byte block size will be 1.5625\%. The workload is exploiting spacial locality.
+128 byte block size will be 1.5625\%. The workload is exploiting spatial locality.
 
 \section*{Problem 7}
 
@@ -85,7 +85,21 @@ miss rate will be 0.000190735\%.
 
 \paragraph{a)}
 
+Each set will have \(8\times 4=32\) words in it, so there are a maximum of 2048 sets that the chip can hold. I assume that the cache attempts to
+use all of these sets. Then there will be 3 bits of block offset and 11 bits for the index. The cache controller will generate 2 bits that indicate
+which block frame in the set is a hit. Together this provides the 16 bits necessary to generate an address into the RAM chip. I assume that the address
+into the RAM chip has the 11 index bits as the highest order bits, then the 3 block offset bits, then the 2 block frame bits as the lowest order bits.
+
+Taking the lowest order 3 bits of the CPU generated address as block offset, our block offset will be \texttt{001} in binary. Taking the next 11 bits
+of the CPU generated address as the index, our index will be \texttt{00001100100}. Then by concatenating these values with the possible 2 bits that the cache
+controller generates, we obtain the RAM chip addresses \texttt{0000110010000100}, \texttt{0000110010000101}, \texttt{0000110010000110},
+and \texttt{0000110010000111}. Equivalently this would be \texttt{0xC84}, \texttt{0xC85}, \texttt{0xC86}, and \texttt{0xC87} in hex.
+
 \paragraph{b)}
+
+With the same assumptions about the cache implementation above, we get \texttt{011} as our block offset and \texttt{10010101000} as our index.
+Then we obtain the RAM chip addresses \texttt{1001010100001100}, \texttt{1001010100001101}, \texttt{1001010100001110}, and \texttt{1001010100001111},
+which would be \texttt{0x950C}, \texttt{0x950D}, \texttt{0x950E}, and \texttt{0x950F}.
 
 \section*{Problem 9}
 
