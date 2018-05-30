@@ -98,13 +98,34 @@ and \texttt{0000110010000111}. Equivalently this would be \texttt{0xC84}, \textt
 \paragraph{b)}
 
 With the same assumptions about the cache implementation above, we get \texttt{011} as our block offset and \texttt{10010101000} as our index.
-Then we obtain the RAM chip addresses \texttt{1001010100001100}, \texttt{1001010100001101}, \texttt{1001010100001110}, and \texttt{1001010100001111},
-which would be \texttt{0x950C}, \texttt{0x950D}, \texttt{0x950E}, and \texttt{0x950F}.
+Then we have the RAM chip addresses \texttt{1001010100001100}, \texttt{1001010100001101},\\
+\texttt{1001010100001110}, and \texttt{1001010100001111}, which would be \texttt{0x950C},\\
+\texttt{0x950D}, \texttt{0x950E}, and \texttt{0x950F}.
 
 \section*{Problem 9}
 
 \paragraph{a)}
 
+Loads take 5 cycles, stores take 4 cycles, R-format instructions take 4 cycles, branches take 3 cycles, and jumps take 3 cycles.
+Thus the average CPI is
+\[0.27\times 5+0.13\times 4+0.38\times 4+0.2\times 3+ 0.02\times 3 = 4.05 \text{ cycles}\]
+
 \paragraph{b)}
+
+Let the average CPI for memory instructions be \(x\). In order to decrease performance by a factor of 2, we must increase the overall average CPI to
+8.1. Thus we need to have
+\begin{align*}
+        0.4x + 0.38\times 4+0.2\times 3+0.02\times 3 &= 8.1 \text{ cycles}\\
+        0.4x&= 5.92 \text{ cycles}\\
+        x&= 14.8 \text{ cycles}
+\end{align*}
+We have that 32.5\% of memory accesses are stores and 67.5\% of memory accesses are loads. Assume that misses are evenly distributed among loads and stores.
+A store that is a cache hit takes 4 cycles. A store that is a cache miss takes 9 cycles. A load that is a cache hit takes 5 cycles. A load that is a cache
+miss on a clean block takes 10 cycles. A load that is a cache miss on a dirty block takes 16 cycles, since two memory accesses must be made.
+
+Let our miss rate be \(m\). Our average CPI for memory accesses will then be
+\[0.325(9m+4(1-m))+0.675(16\times 0.3m+10\times 0.7m+5(1-m))=6.215m+4.675\]
+Solving \(6.215m+4.675=14.8\) for \(m\) yields \(m=1.62912\). Because this is greater than 1, this means that even if every memory access is a cache miss,
+the performance decrease will still be less than a factor of 2. So for any cache hit or miss rate, our performance will not decrease by a factor of 2.
 
 \end{document}
